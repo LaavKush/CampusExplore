@@ -385,7 +385,8 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
         // Campus Data Structure - UPDATED with detailed Lab Information
         const campusLocations = {
             'cse': { 
-                name: 'Computer Science & Engineering Block', lat: 28.6145, lng: 77.2100, isDept: true, 
+                 name: 'Computer Science & Engineering Block', lat: 28.6145, lng: 77.2100, isDept: true, 
+                 scene: 'cse',
                 services: {
                     hod: { name: 'Prof. S. R. N. Reddy', designation: 'HoD CSE, Professor', img: 'images/cse/srn-reddy.jpg' }, 
                     professors: [ // CSE FACULTY LIST
@@ -447,6 +448,7 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
             },
             'it': { 
                 name: 'Information Technology Block', lat: 28.6150, lng: 77.2085, isDept: true,
+                scene: 'it',
                 services: {
                     hod: { name: 'Prof. A.K. Mohapatra', designation: 'Professor and HoD', img: 'images/it/Prof-A-K-Mohapatra.jpg' },
                     professors: [
@@ -538,6 +540,7 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
             },  
             'ece': { 
                 name: 'Electronics & Communication Engineering Block', lat: 28.6135, lng: 77.2095, isDept: true,
+                scene: 'ece',
                 services: {
                     // --- UPDATED HOD ---
                     hod: { name: 'Prof Vandana Niranjan', designation: 'Professor, Head of Department', img: 'images/ece/Prof_Vandana_Niranjan.jpg' },
@@ -639,7 +642,8 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
                 }
             },
             'mae': { 
-                name: 'Mechanical & Automotive Engineering Block', lat: 28.6140, lng: 77.2080, isDept: true,
+               name: 'Mechanical & Automotive Engineering Block', lat: 28.6140, lng: 77.2080, isDept: true,
+               scene: 'mae',
                 services: {
                     hod: { name: 'Dr. O.K Singh', designation: ' HOD, MAE', img: 'images/mae/Prof_David_Chen.jpg' },
                     professors: [
@@ -663,7 +667,7 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
 
                     },
                     about_summary: 'MAE features state-of-the-art facilities like the Automotive Workshop and CAD/CAM Center for comprehensive hands-on mechanical and design experience.',
-                    labs: [
+                      labs: [
                          { 
     name: 'Automotive Workshop',
     assistant: 'Mr. Jamal Hassan',
@@ -704,11 +708,11 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
                     ]
                 }
             },
-            // Non-departmental buildings (no "Services" button)
-            'admin': { name: 'Admin & Examination Block', lat: 28.6155, lng: 77.2090, isDept: false },
-            'library': { name: 'Central Library', lat: 28.6130, lng: 77.2090, isDept: false },
-            'gce': { name: 'General Classroom East Block', lat: 28.6148, lng: 77.2097, isDept: false },
-            'gazebo': { name: 'Student Gazebo Area', lat: 28.6138, lng: 77.2088, isDept: false }
+             // 🏢 Non-departmental buildings
+    'admin': { name: 'Admin & Examination Block', lat: 28.6155, lng: 77.2090, isDept: false, scene: 'admin' },
+    'library': { name: 'Central Library', lat: 28.6130, lng: 77.2090, isDept: false, scene: 'library' },
+    'gcr': { name: 'General Classroom East Block', lat: 28.6148, lng: 77.2097, isDept: false, scene: 'gcr' },
+    'gazebo': { name: 'Student Gazebo Area', lat: 28.6138, lng: 77.2088, isDept: false, scene: 'gazebo' }
         };
 
         // --- MAP INITIALIZATION ---
@@ -1200,64 +1204,83 @@ const CSE_IT_SYLLABUS_URL = './syllabus.pdf';
     primaryBtn.setAttribute('data-key', key);
     buttonContainer.appendChild(primaryBtn);
 
-    if (loc.isDept) {
-        // 📁 Secondary Menu Container
-        const secondaryMenu = document.createElement('div');
-        secondaryMenu.id = `menu-${key}`;
-        secondaryMenu.className = `mt-1 ml-4 space-y-1 ${activeDepartmentKey === key ? '' : 'hidden'}`;
+   if (loc.isDept) {
+    // 📁 Secondary Menu Container
+    const secondaryMenu = document.createElement('div');
+    secondaryMenu.id = `menu-${key}`;
+    secondaryMenu.className = `mt-1 ml-4 space-y-1 ${activeDepartmentKey === key ? '' : 'hidden'}`;
 
-        // 🧑‍🏫 Services Button
-        const servicesBtn = document.createElement('button');
-        servicesBtn.textContent = 'Services 🧑‍🏫';
-        servicesBtn.className = `
-            w-full text-left p-2 rounded-md text-xs text-white font-medium
-            bg-[#118c82] hover:bg-[#0f746c]
-            shadow-md transition duration-200 transform hover:scale-[1.03]
-        `;
-        servicesBtn.onclick = () => openServicesModal(key);
-        secondaryMenu.appendChild(servicesBtn);
+    // 🧑‍🏫 Services Button
+    const servicesBtn = document.createElement('button');
+    servicesBtn.textContent = 'Services 🧑‍🏫';
+    servicesBtn.className = `
+        w-full text-left p-2 rounded-md text-xs text-white font-medium
+        bg-[#118c82] hover:bg-[#0f746c]
+        shadow-md transition duration-200 transform hover:scale-[1.03]
+    `;
+    servicesBtn.onclick = () => openServicesModal(key);
+    secondaryMenu.appendChild(servicesBtn);
 
-        // 🗺️ Map (360 View) Button
-        const mapBtn = document.createElement('button');
-        mapBtn.textContent = 'Map (360° View) 🗺️';
-        mapBtn.className = `
-            w-full text-left p-2 rounded-md text-xs text-white font-medium
-            bg-[#1b9fa2] hover:bg-[#158f8e]
-            shadow-md transition duration-200 transform hover:scale-[1.03]
-        `;
-                    mapBtn.onclick = () => {
-                        // Move Pegman and open 360 view
-                        pegmanMarker.setLatLng([loc.lat, loc.lng]);
-                        pegmanMarker.setPopupContent(`Pegman reached: <b>${loc.name}</b>`);
-                        map.setView([loc.lat, loc.lng], 17);
-                        initPanorama(L.latLng(loc.lat, loc.lng), loc.name);
-                    };
-                    secondaryMenu.appendChild(mapBtn);
-                    buttonContainer.appendChild(secondaryMenu);
+    // 🗺️ 360° Button for Department
+    const mapBtn = document.createElement('button');
+    mapBtn.textContent = 'View in 360° 🗺️';
+    mapBtn.className = `
+        w-full text-left p-2 rounded-md text-xs text-white font-medium
+        bg-[#1b9fa2] hover:bg-[#158f8e]
+        shadow-md transition duration-200 transform hover:scale-[1.03]
+    `;
+    mapBtn.onclick = () => {
+        window.location.href = `tour.html?scene=${loc.scene}`;
+    };
+    secondaryMenu.appendChild(mapBtn);
 
-                    // Add click handler to primary button to toggle secondary menu
-                    primaryBtn.addEventListener('click', () => {
-                        // Close previously open menu
-                        if (activeDepartmentKey && activeDepartmentKey !== key) {
-                            const prevMenu = document.getElementById(`menu-${activeDepartmentKey}`);
-                            if(prevMenu) prevMenu.classList.add('hidden');
-                        }
-                        // Toggle current menu
-                        secondaryMenu.classList.toggle('hidden');
-                        activeDepartmentKey = secondaryMenu.classList.contains('hidden') ? null : key;
-                    });
-                    
-                    departmentList.appendChild(buttonContainer);
+    buttonContainer.appendChild(secondaryMenu);
 
-                } else {
-                    // Non-departmental buildings only move the pegman
-                    primaryBtn.addEventListener('click', () => {
-                        pegmanMarker.setLatLng([loc.lat, loc.lng]);
-                        pegmanMarker.setPopupContent(`Pegman reached:<br><b>${loc.name}</b>`);
-                        map.setView([loc.lat, loc.lng], 17);
-                    });
-                    buildingList.appendChild(buttonContainer);
-                }
+    // 🔽 Toggle submenu
+    primaryBtn.addEventListener('click', () => {
+        if (activeDepartmentKey && activeDepartmentKey !== key) {
+            const prevMenu = document.getElementById(`menu-${activeDepartmentKey}`);
+            if (prevMenu) prevMenu.classList.add('hidden');
+        }
+        secondaryMenu.classList.toggle('hidden');
+        activeDepartmentKey = secondaryMenu.classList.contains('hidden') ? null : key;
+    });
+
+    departmentList.appendChild(buttonContainer);
+
+} else {
+    // 🏫 Non-departmental buildings also get a 360° button
+    const secondaryMenu = document.createElement('div');
+    secondaryMenu.id = `menu-${key}`;
+    secondaryMenu.className = `mt-1 ml-4 space-y-1 hidden`;
+
+    const mapBtn = document.createElement('button');
+    mapBtn.textContent = 'View in 360° 🗺️';
+    mapBtn.className = `
+        w-full text-left p-2 rounded-md text-xs text-white font-medium
+        bg-[#1b9fa2] hover:bg-[#158f8e]
+        shadow-md transition duration-200 transform hover:scale-[1.03]
+    `;
+    mapBtn.onclick = () => {
+        window.location.href = `tour.html?scene=${loc.scene}`;
+    };
+    secondaryMenu.appendChild(mapBtn);
+    buttonContainer.appendChild(secondaryMenu);
+
+    // 🧭 Clicking main button shows 360° and moves pegman
+    primaryBtn.addEventListener('click', () => {
+        // Move pegman
+        pegmanMarker.setLatLng([loc.lat, loc.lng]);
+        pegmanMarker.setPopupContent(`Pegman reached:<br><b>${loc.name}</b>`);
+        map.setView([loc.lat, loc.lng], 17);
+
+        // Toggle 360° button visibility
+        secondaryMenu.classList.toggle('hidden');
+    });
+
+    buildingList.appendChild(buttonContainer);
+}
+
             }
         }
 

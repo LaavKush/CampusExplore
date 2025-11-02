@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus 360° Virtual Tour</title>
+
+  <!-- Pannellum -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+
+  <style>
+    body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+    #panorama { width: 100%; height: 100vh; position: absolute; z-index: 10; }
+    #map-container {
+      position: fixed; top: 20px; right: 20px; width: 250px; height: 250px;
+      z-index: 1000; border: 3px solid #004a99; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border-radius: 8px; overflow: hidden; transition: all 0.3s ease;
+    }
+    #map-container.hidden { width: 50px; height: 50px; border-radius: 50%; cursor: pointer; }
+    #map { width: 100%; height: 100%; }
+    .custom-hotspot span {
+      background: rgba(0, 74, 153, 0.8); color: white; padding: 4px 8px;
+      border-radius: 4px; font-size: 12px; white-space: nowrap;
+    }
+    #back-btn {
+      position: fixed; top: 5px; left: 38px; z-index: 1100;
+      background-color: #004a99; color: white; border: none; padding: 10px 18px;
+      border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: background 0.3s ease, transform 0.2s ease;
+    }
+    #back-btn:hover { background-color: #006ad1; transform: scale(1.05); }
+  </style>
+</head>
+<body>
+
+<!-- 🔙 Back to Campus Explore Button -->
+<button id="back-btn" onclick="window.location.href='index.html'">⬅ Back to Campus Explore</button>
+
+<div id="panorama"></div>
+<div id="map-container" onclick="toggleMap()">
+  <div id="map"></div>
+</div>
+
+<!-- Pannellum -->
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+<script>
+  // ============================================================
+  // 🎯 A. SCENE DATA
+  // ============================================================
+  const campusLocations = {
+  "entrance_gate": {
+    title: "Main Gate Entrance",
+    image: "panorama/entrance2.jpg",
+    lat: 28.665834, lng: 77.232432,
+    hotspots: [
+      { pitch: 0, yaw: -45, type: "scene", text: "Enter Campus", sceneId: "main_road" }
+    ]
+  },
+
+  "main_road": {
+    title: "College Road",
+    image: "panorama/entrance.jpg",
+    lat: 28.665830, lng: 77.232254,
+    hotspots: [
+      { pitch: 0, yaw: 0, type: "scene", text: "Back to Gate", sceneId: "entrance_gate" },
+      { pitch: 0, yaw: 90, type: "scene", text: "Towards Admin Block", sceneId: "admin_block" },
+      { pitch: 0, yaw: -90, type: "scene", text: "Towards Building 1", sceneId: "cse" }
+    ]
+  },
+
+  "admin_block": {
+    title: "Administrative Block",
+    image: "panorama/administrativeblock.jpg",
+    lat: 28.664414, lng: 77.233464,
+    hotspots: [
+      { pitch: 0, yaw: -180, type: "scene", text: "Back to Main Road", sceneId: "main_road" },
+      { pitch: 0, yaw: 45, type: "scene", text: "Towards Computer Centre", sceneId: "comp_center" },
+      { pitch: 0, yaw: -45, type: "scene", text: "Near Building 2", sceneId: "cse" }
+    ]
+  },
+
+  "cse": {
+    title: "Computer Science Department",
+    image: "panorama/ece.jpg",
+    lat: 28.6657, lng: 77.2331,
+    hotspots: [
+      { pitch: 0, yaw: 0, type: "scene", text: "Back to Admin", sceneId: "admin_block" }
+    ]
+  },
+
+  "it": {
+    title: "IT Block",
+    image: "panorama/it.jpg",
+    lat: 28.6656, lng: 77.2332,
+    hotspots: []
+  },
+
+  "ece": {
+    title: "ECE Block",
+    image: "panorama/ece.jpg",
+    lat: 28.6655, lng: 77.2333,
+    hotspots: []
+  },
+
+  "mae": {
+    title: "MAE Block",
+    image: "panorama/mechanical.jpg",
+    lat: 28.6654, lng: 77.2334,
+    hotspots: []
+  },
+
+  "library": {
+    title: "Central Library",
+    image: "panorama/library.jpg",
+    lat: 28.6130, lng: 77.2090,
+    hotspots: []
+  },
+
+  "admin": {
+    title: "Admin & Examination Block",
+    image: "panorama/examdivision.jpg",
+    lat: 28.6155, lng: 77.2090,
+    hotspots: []
+  },
+
+  "gcr": {
+    title: "General Classroom East Block",
+    image: "panorama/gce.jpg",
+    lat: 28.6148, lng: 77.2097,
+    hotspots: []
+  },
+
+  "gazebo": {
+    title: "Student Gazebo Area",
+    image: "panorama/sittingarea.jpg",
+    lat: 28.6138, lng: 77.2088,
+    hotspots: []
+  }
+};
+
+
+  // ============================================================
+  // 🎯 B. INITIALIZATION HELPERS
+  // ============================================================
+  let viewer, map, mapMarkers = {}, activeLocationKey;
+
+  function getSceneFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("scene") || "entrance_gate"; // Default scene
+  }
+
+  // ============================================================
+  // 🌀 C. INITIALIZE PANNELLUM VIEWER
+  // ============================================================
+  function initializePannellum(startScene) {
+    const scenes = {};
+    for (const key in campusLocations) {
+      const location = campusLocations[key];
+      const pannellumHotspots = (location.hotspots || []).map(h => ({
+        ...h,
+        createTooltipFunc: createHotspotTooltip,
+        clickHandlerFunc: clickHotspot,
+        clickHandlerArgs: { sceneId: h.sceneId, text: h.text }
+      }));
+
+      scenes[key] = {
+        title: location.title,
+        type: "equirectangular",
+        panorama: location.image,
+        hotSpots: pannellumHotspots
+      };
+    }
+
+    viewer = pannellum.viewer('panorama', {
+      "default": {
+        "firstScene": startScene,
+        "sceneFadeDuration": 1000,
+        "autoLoad": true,
+        "showZoomCtrl": false
+      },
+      "scenes": scenes
+    });
+
+    viewer.on('load', function() {
+      activeLocationKey = viewer.getScene();
+      updateMapMarker();
+    });
+  }
+
+  // ============================================================
+  // 🗺️ D. LEAFLET MAP INITIALIZATION
+  // ============================================================
+  function initializeLeafletMap(startScene) {
+    const initialCoords = [campusLocations[startScene].lat, campusLocations[startScene].lng];
+    map = L.map('map', { center: initialCoords, zoom: 18, zoomControl: false, attributionControl: false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    for (const key in campusLocations) {
+      const location = campusLocations[key];
+      const marker = L.circleMarker([location.lat, location.lng], {
+        radius: 6, color: '#004a99', fillColor: '#004a99', fillOpacity: 1
+      })
+      .addTo(map)
+      .bindTooltip(location.title, { permanent: false, direction: 'right' })
+      .on('click', () => changeScene(key));
+
+      mapMarkers[key] = marker;
+    }
+    updateMapMarker();
+  }
+
+  // ============================================================
+  // 💡 E. SUPPORT FUNCTIONS
+  // ============================================================
+  function createHotspotTooltip(hotSpotDiv, args = {}) {
+    hotSpotDiv.classList.add('custom-hotspot');
+    const span = document.createElement('span');
+    span.innerHTML = args.text || "View Spot";
+    hotSpotDiv.appendChild(span);
+  }
+
+  function clickHotspot(event, args = {}) {
+    if (args.sceneId) changeScene(args.sceneId);
+  }
+
+  function changeScene(newSceneId) {
+    if (newSceneId !== activeLocationKey && campusLocations[newSceneId]) {
+      viewer.loadScene(newSceneId);
+      activeLocationKey = newSceneId;
+      updateMapMarker();
+    }
+  }
+
+  function updateMapMarker() {
+    for (const key in mapMarkers) {
+      mapMarkers[key].setStyle({ fillColor: '#004a99', color: '#004a99', radius: 6 });
+    }
+    const activeMarker = mapMarkers[activeLocationKey];
+    if (activeMarker) {
+      activeMarker.setStyle({ fillColor: '#cc0000', color: '#cc0000', radius: 8 });
+      map.panTo(activeMarker.getLatLng());
+    }
+  }
+
+  function toggleMap() {
+    const mapContainer = document.getElementById('map-container');
+    mapContainer.classList.toggle('hidden');
+    setTimeout(() => map.invalidateSize(), 300);
+  }
+
+  // ============================================================
+  // 🚀 F. START EVERYTHING
+  // ============================================================
+  document.addEventListener('DOMContentLoaded', () => {
+    const startScene = getSceneFromURL();
+    activeLocationKey = startScene;
+    initializePannellum(startScene);
+    initializeLeafletMap(startScene);
+  });
+</script>
+
+</body>
+</html>
