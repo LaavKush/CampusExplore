@@ -54,95 +54,217 @@
   // 🎯 A. SCENE DATA
   // ============================================================
   const campusLocations = {
-  "entrance_gate": {
-    title: "Main Gate Entrance",
-    image: "panorama/entrance2.jpg",
-    lat: 28.665834, lng: 77.232432,
-    hotspots: [
-      { pitch: 0, yaw: -45, type: "scene", text: "Enter Campus", sceneId: "main_road" }
-    ]
-  },
-
-  "main_road": {
-    title: "College Road",
-    image: "panorama/entrance.jpg",
-    lat: 28.665830, lng: 77.232254,
-    hotspots: [
-      { pitch: 0, yaw: 0, type: "scene", text: "Back to Gate", sceneId: "entrance_gate" },
-      { pitch: 0, yaw: 90, type: "scene", text: "Towards Admin Block", sceneId: "admin_block" },
-      { pitch: 0, yaw: -90, type: "scene", text: "Towards Building 1", sceneId: "cse" }
-    ]
-  },
-
-  "admin_block": {
-    title: "Administrative Block",
-    image: "panorama/administrativeblock.jpg",
-    lat: 28.664414, lng: 77.233464,
-    hotspots: [
-      { pitch: 0, yaw: -180, type: "scene", text: "Back to Main Road", sceneId: "main_road" },
-      { pitch: 0, yaw: 45, type: "scene", text: "Towards Computer Centre", sceneId: "comp_center" },
-      { pitch: 0, yaw: -45, type: "scene", text: "Near Building 2", sceneId: "cse" }
-    ]
-  },
-
-  "cse": {
-    title: "Computer Science Department",
-    image: "panorama/ece.jpg",
-    lat: 28.6657, lng: 77.2331,
-    hotspots: [
-      { pitch: 0, yaw: 0, type: "scene", text: "Back to Admin", sceneId: "admin_block" }
-    ]
-  },
-
-  "it": {
-    title: "IT Block",
-    image: "panorama/it.jpg",
-    lat: 28.6656, lng: 77.2332,
-    hotspots: []
-  },
-
-  "ece": {
-    title: "ECE Block",
-    image: "panorama/ece.jpg",
-    lat: 28.6655, lng: 77.2333,
-    hotspots: []
-  },
-
-  "mae": {
-    title: "MAE Block",
-    image: "panorama/mechanical.jpg",
-    lat: 28.6654, lng: 77.2334,
-    hotspots: []
-  },
-
-  "library": {
-    title: "Central Library",
-    image: "panorama/library.jpg",
-    lat: 28.6130, lng: 77.2090,
-    hotspots: []
-  },
-
-  "admin": {
-    title: "Admin & Examination Block",
-    image: "panorama/examdivision.jpg",
-    lat: 28.6155, lng: 77.2090,
-    hotspots: []
-  },
-
-  "gcr": {
-    title: "General Classroom East Block",
-    image: "panorama/gce.jpg",
-    lat: 28.6148, lng: 77.2097,
-    hotspots: []
-  },
-
-  "gazebo": {
-    title: "Student Gazebo Area",
-    image: "panorama/sittingarea.jpg",
-    lat: 28.6138, lng: 77.2088,
-    hotspots: []
-  }
-};
+            "entrance_gate": {
+                "title": "Main Gate Entrance",
+                "image": "panorama/entrance2.jpg", 
+                "lat": 28.665834,
+                "lng": 77.232432,
+                "hotspots": [
+                    { "pitch": 0, "yaw": -45, "type": "scene", "text": "Enter Campus", "sceneId": "main_road" }
+                ]
+            },
+            "main_road": {
+                "title": "College Road",
+                "image": "panorama/entrance.jpg",
+                "lat": 28.665830,
+                "lng": 77.232254,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Back to Gate", "sceneId": "entrance_gate" },
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Towards Admin Block", "sceneId": "admin_block" },
+                    { "pitch": 0, "yaw": -90, "type": "scene", "text": "Towards Building 1", "sceneId": "panorama_7" }
+                ]
+            },
+            "admin_block": {
+                "title": "Administrative Block",
+                "image": "panorama/administrativeblock.jpg", 
+                "lat": 28.664414,
+                "lng": 77.233464,
+                "hotspots": [
+                    { "pitch": 0, "yaw": -180, "type": "scene", "text": "Back to Main Road", "sceneId": "main_road" },
+                    { "pitch": 0, "yaw": 45, "type": "scene", "text": "Towards Computer Centre", "sceneId": "comp_center" },
+                    { "pitch": 0, "yaw": -45, "type": "scene", "text": "Near Building 2", "sceneId": "panorama_19" }
+                ]
+            },
+            "comp_center": {
+                "title": "Computer Centre",
+                "image": "panorama/computercentre.jpg", 
+                "lat": 28.664119,
+                "lng": 77.233184,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 180, "type": "scene", "text": "Back to Admin Block", "sceneId": "admin_block" },
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Towards Exam Division", "sceneId": "exam_div" },
+                    { "pitch": 0, "yaw": 270, "type": "scene", "text": "Towards Tiwari Ji Shop", "sceneId": "tiwari_ji" }
+                ]
+            },
+            "tiwari_ji": {
+                "title": "Tiwari Ji Snack/Shop",
+                "image": "panorama/tiwariji.jpg", 
+                "lat": 28.663922,
+                "lng": 77.232877,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 270, "type": "scene", "text": "Back to Computer Centre", "sceneId": "comp_center" },
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Towards MAE/Nescafe", "sceneId": "mae_nescafe" }
+                ]
+            },
+            "mae_nescafe": {
+                "title": "MAE Block to Nescafe",
+                "image": "panorama/maetonescafe.jpg", 
+                "lat": 28.664846,
+                "lng": 77.233166,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 180, "type": "scene", "text": "Back to Tiwari Ji", "sceneId": "tiwari_ji" },
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Towards Mechanical Block", "sceneId": "mechanical" }
+                ]
+            },
+            "mae": {
+                "title": "Mechanical Block",
+                "image": "panorama/mechanical.jpg",
+                "lat": 28.664004, 
+                "lng": 77.232994, 
+                "hotspots": [
+                    { "pitch": 0, "yaw": -90, "type": "scene", "text": "Towards MAE/Nescafe", "sceneId": "mae_nescafe" },
+                    { "pitch": 0, "yaw": 180, "type": "scene", "text": "Towards IT Block", "sceneId": "it_front" }
+                ]
+            },
+            "it": {
+                "title": "IT Block Front",
+                "image": "panorama/IT.jpg",
+                "lat": 28.663922,
+                "lng": 77.232885,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Back to Mechanical", "sceneId": "mechanical" },
+                    { "pitch": 0, "yaw": 135, "type": "scene", "text": "Around to IT Back", "sceneId": "it_back" }
+                ]
+            },
+            "it_back": {
+                "title": "IT Block Back",
+                "image": "panorama/itback.jpg", 
+                "lat": 28.665457, 
+                "lng": 77.232994, 
+                "hotspots": [
+                    { "pitch": 0, "yaw": -45, "type": "scene", "text": "Back to IT Front", "sceneId": "it_front" },
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Towards Sitting Area", "sceneId": "sitting_area" }
+                ]
+            },
+            "sitting_area": {
+                "title": "Sitting Area/Park",
+                "image": "panorama/sittingarea.jpg", 
+                "lat": 28.665457,
+                "lng": 77.232994,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 180, "type": "scene", "text": "Back to IT Back", "sceneId": "it_back" },
+                    { "pitch": 0, "yaw": 45, "type": "scene", "text": "Towards Hostel Road", "sceneId": "hostel_sit" }
+                ]
+            },
+            "hostel_sit": {
+                "title": "Hostel Road Sitting Area",
+                "image": "panorama/hosteltosittingarea.jpg", 
+                "lat": 28.665055,
+                "lng": 77.232122,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 225, "type": "scene", "text": "Back to Sitting Area", "sceneId": "sitting_area" },
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Towards Hostel Exit", "sceneId": "hostel_exit" }
+                ]
+            },
+            "hostel_exit": {
+                "title": "Hostel Exit Road",
+                "image": "panorama/hosteltoexit.jpg", 
+                "lat": 28.665055, 
+                "lng": 77.232122, 
+                "hotspots": [
+                    { "pitch": 0, "yaw": -90, "type": "scene", "text": "Back to Hostel Sitting", "sceneId": "hostel_sit" },
+                    { "pitch": 0, "yaw": 45, "type": "scene", "text": "Towards ECE/Basketball", "sceneId": "ece_basketball" }
+                ]
+            },
+            "ece_basketball": {
+                "title": "ECE to Basketball Court",
+                "image": "panorama/ecetobasketball.jpg", 
+                "lat": 28.664461,
+                "lng": 77.232507,
+                "hotspots": [
+                    { "pitch": 0, "yaw": -45, "type": "scene", "text": "Towards Hostel Exit", "sceneId": "hostel_exit" },
+                    { "pitch": 0, "yaw": -180, "type": "scene", "text": "Towards ECE Block", "sceneId": "ece_block" }
+                ]
+            },
+            "ece": {
+                "title": "ECE Block",
+                "image": "panorama/ece.jpg",
+                "lat": 28.664461,
+                "lng": 77.232507,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Towards Basketball Court", "sceneId": "ece_basketball" },
+                    { "pitch": 0, "yaw": 270, "type": "scene", "text": "Towards Main Ground", "sceneId": "ground" }
+                ]
+            },
+             "cse": {
+                "title": "CSE Block",
+                "image": "panorama/ece.jpg",
+                "lat": 28.664461,
+                "lng": 77.232507,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Towards Basketball Court", "sceneId": "ece_basketball" },
+                    { "pitch": 0, "yaw": 270, "type": "scene", "text": "Towards Main Ground", "sceneId": "ground" }
+                ]
+            },
+            "ground": {
+                "title": "Main Sports Ground",
+                "image": "panorama/ground.jpg",
+                "lat": 28.664670,
+                "lng": 77.233097,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Towards ECE Block", "sceneId": "ece_block" },
+                    { "pitch": 0, "yaw": -90, "type": "scene", "text": "Towards GCE Block", "sceneId": "gce_block" }
+                ]
+            },
+            "gce_block": {
+                "title": "GCE Block / Garden",
+                "image": "panorama/GCE.jpg",
+                "lat": 28.664219,
+                "lng": 77.232525,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Towards Ground", "sceneId": "ground" },
+                    { "pitch": 0, "yaw": -90, "type": "scene", "text": "Towards Cafe/TNP", "sceneId": "cafe_tnp" }
+                ]
+            },
+            "cafe_tnp": {
+                "title": "Cafe & TnP Section",
+                "image": "panorama/cafetotnp.jpg", 
+                "lat": 28.664004, 
+                "lng": 77.232994, 
+                "hotspots": [
+                    { "pitch": 0, "yaw": 90, "type": "scene", "text": "Back to GCE Block", "sceneId": "gce_block" },
+                    { "pitch": 0, "yaw": 180, "type": "scene", "text": "Towards Exam Division", "sceneId": "exam_div" }
+                ]
+            },
+            "exam_div": {
+                "title": "Exam Division/Tuck Shop",
+                "image": "panorama/examdivision.jpg", 
+                "lat": 28.664006,
+                "lng": 77.232997,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Towards Cafe/TNP", "sceneId": "cafe_tnp" },
+                    { "pitch": 0, "yaw": -90, "type": "scene", "text": "Towards Computer Centre", "sceneId": "comp_center" }
+                ]
+            },
+            "panorama_7": {
+                "title": "Building 1 (Library Area)",
+                "image": "panorama/library.jpg", 
+                "lat": 28.664086,
+                "lng": 77.233217,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 180, "type": "scene", "text": "Back to Main Road", "sceneId": "main_road" }
+                ]
+            },
+            "panorama_19": {
+                "title": "Building 2 (Dispensary Area)",
+                "image": "panorama/panorama19.jpg", 
+                "lat": 28.664004,
+                "lng": 77.232994,
+                "hotspots": [
+                    { "pitch": 0, "yaw": 0, "type": "scene", "text": "Back to Admin Block", "sceneId": "admin_block" }
+                ]
+            }
+        };
 
 
   // ============================================================
